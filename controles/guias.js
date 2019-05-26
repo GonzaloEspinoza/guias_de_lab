@@ -4,7 +4,8 @@
 
 const Practica = require('../modelos/practicas')
 const Materia = require('../modelos/materias')
-
+const Image = require('../modelos/image');
+const file = require('file');
 // Controllers definition
 
 function getPractica (req, res) {
@@ -83,6 +84,7 @@ function savePractica (req, res) {
         if(err) res.status(500).send({message:`Error al guardar en la BD ${err}`})
 
         res.status(200).send({practica: practicaStored})
+        
     })
 };
 
@@ -125,6 +127,17 @@ function deletePractica (req, res) {
   })
 }
 
+//////////////subir
+function subir (req, res){
+    const image = new Image();
+    image.filename = image.file.filename;
+    image.path = '/uploads/' + req.file.filename;
+    image.originalname = req.file.originalname;
+    image.size = req.file.size;
+
+    image.save();
+}
+
 module.exports = {
   getPractica,
   getPractica,
@@ -132,5 +145,6 @@ module.exports = {
   getMateria,
   saveMateria,
   updatePractica,
-  deletePractica
+  deletePractica,
+  subir
 }

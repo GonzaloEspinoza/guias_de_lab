@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 const PracticaSchema = Schema({
     titulo: {
-      type: String,
+      type: Number,
       require: true
     },
     texto: {

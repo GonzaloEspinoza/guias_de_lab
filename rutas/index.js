@@ -14,6 +14,7 @@ router.delete('/practica/:guideId', guideCtrl.deletePractica)
 //////////
 router.get('/materia', guideCtrl.getMateria)
 router.post('/materia', guideCtrl.saveMateria)
-
+/////////
+router.post('/subir',guideCtrl.subir)
 
 module.exports = router
