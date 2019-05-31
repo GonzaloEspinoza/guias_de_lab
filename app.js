@@ -16,27 +16,30 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(morgan('dev'))
 app.use('/api', routes)
+ 
+//middlewar multer subir archivos
 
+const storage = multer.diskStorage({
+    destination: "./public/uploads",
+    filename:function(req,file,cb){
+        var extencionArchivo=path.extname(file.originalname)
 
+        console.log(extencionArchivo)
+        cb(null, "ARCHCOMPR_"+Date.now()+extencionArchivo)
+    }
+})
 
-//middlewares
-//var multer = multer({ dest: 'public/upload/'})
+var uploads = multer({
+    storage:storage
+}).single("archivo");
+
+///
 
 app.use(morgan('dev'));
 app.use(express.urlencoded({extended: false}));
-const storage = multer.diskStorage({
-    destination: path.join(__dirname, 'public/uploads'),
-    filename: (req, file, cb, filename) => {
-        console.log(file);
-        cb(null, uuid() + path.extname(file.originalname));
-    }
-}) 
-app.use(multer({storage}).single('image'));
 
-app.use((req, res, next) => {
-    app.locals.format = format;
-    next();
-});
+
+
 app.use(require('./rutas/index'));
 
 app.use(express.json());

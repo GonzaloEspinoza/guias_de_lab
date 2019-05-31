@@ -4,26 +4,17 @@
 
 const Practica = require('../modelos/practicas')
 const Materia = require('../modelos/materias')
-const Image = require('../modelos/image');
-const file = require('file');
+const uploads = require('../app');
 // Controllers definition
 
-function getPractica (req, res) {
-  let guideId = req.params.guideId
+function getPracticaId (req, res) {
+  let pId = req.params.pId
 
-  Practica.findById(guideId, (err, practica) => {
-    if (err) {
-      return res.status(500).send({
-        message: `Error performing request: ${err}`
-      })
-    }
-    if (!practica) {
-      return res.status(404).send({
-        message: `The guide doesn't exist.`
-      })
-    }
-    res.status(200).send({ practica })
-  })
+    Practica.findById(pId,(err,practica)=> {
+        if(err) return res.status(500).send({message:`Error al realizar la peticion: ${err}`})
+        if(!practica) return res.status(404).send({message:`El producto no existe`})
+        res.status(200).send({practica})
+    })
 }
 
 function getPractica (req, res) {
@@ -89,58 +80,54 @@ function savePractica (req, res) {
 };
 
 function updatePractica (req, res) {
-  let guideId = req.params.guideId
-  let update = req.body
+  let pId = req.params.pId
+  let update = req.body//rescata los campos del cuerpo
 
-  Practica.findByIdAndUpdate(guideId, update, (err, guideUpdated) => {
-    if (err) {
-      res.status(500).send({
-        message: `Error to update the guide: ${err}`
-      })
-    }
-    res.status(200).send({
-      guide: guideUpdated
+  Practica.findByIdAndUpdate(pId, update, (err, pUpdated)=>{//la funcion actualiza mediante el id
+      if(err) res.status(500).send({message: `Error al actualizar el producto:${err}`})
+
+      res.status(200).send({practica: pUpdated})
     })
-  })
+
 }
 
 function deletePractica (req, res) {
-  let guideId = req.params.guideId
+  let pId = req.params.pId
 
-  Practica.findById(guideId, (err, guide) => {
-    if (err) {
-      res.status(500).send({
-        message: `Error to delete the guide: ${err}`
-      })
-    }
+  Practica.findById(pId, (err, practica)=>{
+    if(err) res.status(500).send({message: `Error al borrar el producto:${err}`})
 
-    guide.remove(err => {
-      if (err) {
-        res.status(500).send({
-          message: `Error to delete the guide: ${err}`
-        })
-      }
-      res.status(200).send({
-        message: `The guide has delete.`
-      })
+    practica.remove(err => {
+      if(err) res.status(500).send({message: `Error al borrar el producto:${err}`})
+      res.status(200).send({message: "El producto ha sido eliminado"})
     })
   })
-}
+} 
 
 //////////////subir
 function subir (req, res){
-    const image = new Image();
-    image.filename = image.file.filename;
-    image.path = '/uploads/' + req.file.filename;
-    image.originalname = req.file.originalname;
-    image.size = req.file.size;
-
-    image.save();
+    uploads(req,res,(err)=>{
+      console.log(req.file)
+      if(err){
+        res.status(500).json({
+          message: "no se pudo guardar"
+        })
+      }else{
+        var ruta = req.file.path.substr(6, req.file.path.length)
+        var img = {
+          name: req.file.originalname,
+          physicalpath: req.file.path,
+          relativepath: 'http://localhost:7777',
+          size: req.file.size
+        }
+      }
+      res.status(200).send(img)
+    })
 }
 
 module.exports = {
   getPractica,
-  getPractica,
+  getPracticaId,
   savePractica,
   getMateria,
   saveMateria,
