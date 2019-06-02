@@ -19,19 +19,19 @@ app.use('/api', routes)
  
 //middlewar multer subir archivos
 
-const storage = multer.diskStorage({
-    destination: "./public/uploads",
-    filename:function(req,file,cb){
-        var extencionArchivo=path.extname(file.originalname)
+// const storage = multer.diskStorage({
+//     destination: "./public/uploads",
+//     filename:function(req,file,cb){
+//         var extencionArchivo=path.extname(file.originalname)
 
-        console.log(extencionArchivo)
-        cb(null, "ARCHCOMPR_"+Date.now()+extencionArchivo)
-    }
-})
+//         console.log(extencionArchivo)
+//         cb(null, "ARCHCOMPR_"+Date.now()+extencionArchivo)
+//     }
+// })
 
-var uploads = multer({
-    storage:storage
-}).single("archivo");
+// var uploads = multer({
+//     storage:storage
+// }).single("archivo");
 
 ///
 
@@ -47,5 +47,6 @@ app.use(express.urlencoded({extended: true}));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-module.exports = {app,uploads}
+
+module.exports = app
 
